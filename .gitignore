@@ -1,0 +1,5 @@
+# Build output and local dependencies
+/build*/
+/dist/
+/deps/
+/backups/

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'none'; object-src 'none'">
+  <title>Quest Search and Notification Overlay</title>
+  <link rel="stylesheet" href="overlay.css">
+  <link rel="stylesheet" href="boxes.css">
+</head>
+<body>
+  <main id="panel" hidden>
+    <header>
+      <h1 id="title">Quests</h1>
+      <span class="head-right">
+        <span id="build"></span>
+        <button type="button" class="chip action" id="gear" title="Notification boxes, game notifications, nearby messages and the world map">Settings</button>
+      </span>
+    </header>
+    <label class="search">
+      <span class="sr">Search quests</span>
+      <input id="search" type="text" autocomplete="off" spellcheck="false" placeholder="Search quests, objectives, places, journal text or mod name">
+    </label>
+    <nav class="filters" aria-label="Sort">
+      <button type="button" class="chip action" id="sort">Sort: Tracked first</button>
+      <button type="button" class="chip action" id="untrackall">Untrack all</button>
+      <span id="status"></span>
+    </nav>
+    <section id="settings" hidden></section>
+    <div class="columns" id="columns">
+      <nav class="tabs" id="tabs" aria-label="Tabs">
+        <button type="button" class="chip tab" data-view="pinned" data-label="Pinned" title="Only your pinned quests. Click again to go back">Pinned</button>
+        <button type="button" class="chip tab nearby" id="nearby" data-view="nearby" data-label="Nearby" title="Quests with work where you are">Nearby</button>
+        <button type="button" class="chip tab on" data-filter="main" data-label="Main">Main</button>
+        <button type="button" class="chip tab on" data-filter="side" data-label="Side">Side</button>
+        <button type="button" class="chip tab on" data-filter="misc" data-label="Misc">Misc</button>
+        <button type="button" class="chip tab" data-filter="done" data-label="Completed" title="Completed, failed, and finished misc quests">Completed</button>
+        <button type="button" class="chip tab tab-hidden" data-view="hidden" data-label="Hidden" title="Quests you hid (H). They show nowhere else and send no notifications">Hidden</button>
+        <span class="tab-gap"></span>
+        <span class="tab-rule" aria-hidden="true"></span>
+        <button type="button" class="chip tab" data-view="history" data-label="Notifications" title="Every notification of this game session, newest first: quest boxes and the game's own lines. Not saved: gone when the game closes">Notifications</button>
+      </nav>
+      <section id="scroll">
+        <ul id="list"></ul>
+        <p class="empty" id="empty" hidden></p>
+      </section>
+      <aside id="detail" aria-live="polite"></aside>
+    </div>
+    <div id="toast" role="status" aria-live="polite"></div>
+    <footer>
+      <span class="k-quest"><kbd>↑</kbd><kbd>↓</kbd> move</span>
+      <span class="k-quest"><kbd>Enter</kbd> or click: track / untrack</span>
+      <span class="k-quest"><kbd>M</kbd> show on map</span>
+      <span class="k-quest"><kbd>P</kbd> or <span class="star-k">☆</span>: pin to the top</span>
+      <span class="k-quest"><kbd>H</kbd> hide / unhide</span>
+      <span class="k-hist"><kbd>↑</kbd><kbd>↓</kbd> scroll</span>
+      <span class="k-hist"><kbd>PgUp</kbd><kbd>PgDn</kbd> scroll a page</span>
+      <span class="k-hist"><kbd>Home</kbd><kbd>End</kbd> top / bottom</span>
+      <span><kbd>Esc</kbd> close</span>
+      <span><kbd id="jkey">J</kbd> closes outside the search box</span>
+    </footer>
+  </main>
+  <div id="toasts" class="toasts pos-1" aria-live="polite"></div>
+  <script src="boxes.js"></script>
+  <script src="overlay.js"></script>
+</body>
+</html>

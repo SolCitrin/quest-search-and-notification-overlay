@@ -1,0 +1,74 @@
+/* Quest Search and Notification Overlay: the box layer (0.16.0). One stack for quest boxes and game lines, outside the
+   J panel. Moved here from overlay.css (QSO 0.11.0) and merged with HUD Notification Replacer 0.2.0's boxes.css, so a
+   notifications-only page can load it alone: the colours are set on .toasts itself, not on :root.
+   The view is shown only while a box is up (Prisma UI draws a shown view every frame). Prisma UI renders on the CPU:
+   no shadows, blurs or gradients here, and nothing animates once a box has arrived. */
+html {
+  font-size: 18px;
+  font-size: clamp(15px, 0.94vw, 30px);
+}
+
+.toasts {
+  --ink: #e8e0cc;
+  --muted: #a39a86;
+  --gold: #c9a961;
+  --panel: rgba(12, 10, 8, 0.94);
+  --line: rgba(201, 169, 97, 0.35);
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  width: 22em;
+  max-width: 44vw;
+  color: var(--ink);
+  font-family: "Futura Condensed", "Futura", "Segoe UI", sans-serif;
+  font-size: 1rem;  /* set from iBoxScale (boxes.js) */
+  pointer-events: none;
+}
+.toasts.paused { visibility: hidden; }
+.toasts.pos-0 { top: 5vh; left: 1.6vw; }
+.toasts.pos-1 { top: 5vh; right: 1.6vw; }
+.toasts.pos-2 { top: 36vh; left: 1.6vw; }
+.toasts.pos-3 { top: 36vh; right: 1.6vw; }
+/* 0.17.0: the boxes are in the DOM oldest first and read top to bottom in every spot, like the game's own lines. At the
+   bottom spots the stack is anchored by its bottom edge, so the newest sits at the spot and the older ones move up.
+   Kept clear of the vanilla health / magicka / stamina bars. */
+.toasts.pos-4 { bottom: 13vh; left: 1.6vw; }
+.toasts.pos-5 { bottom: 13vh; right: 1.6vw; }
+
+.box {
+  overflow: hidden;
+  max-height: 16em;
+  margin: 0.22em 0;
+  padding: 0.5em 0.75em 0.55em;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--gold);
+  opacity: 1;
+  transform: translateX(0);
+  transition: transform 0.38s ease-out, opacity 0.38s ease-out, max-height 0.38s ease-out, margin 0.38s ease-out, padding 0.38s ease-out;
+}
+.toasts.pos-1 .box, .toasts.pos-3 .box, .toasts.pos-5 .box { border-left: 1px solid var(--line); border-right: 3px solid var(--gold); }
+/* Coming in and going out: from / to the screen edge on its side, folding its height so the others slide along. */
+.box.pre, .box.out { opacity: 0; max-height: 0; margin: 0; padding-top: 0; padding-bottom: 0; }
+.toasts.pos-0 .box.pre, .toasts.pos-2 .box.pre, .toasts.pos-4 .box.pre,
+.toasts.pos-0 .box.out, .toasts.pos-2 .box.out, .toasts.pos-4 .box.out { transform: translateX(-115%); }
+.toasts.pos-1 .box.pre, .toasts.pos-3 .box.pre, .toasts.pos-5 .box.pre,
+.toasts.pos-1 .box.out, .toasts.pos-3 .box.out, .toasts.pos-5 .box.out { transform: translateX(115%); }
+.b-head { display: flex; justify-content: space-between; align-items: baseline; gap: 0.6em; font-size: 0.7em; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--gold); }
+.box.kind-leave .b-head { color: var(--muted); }
+.b-key { border: 1px solid var(--line); padding: 0 0.35em; color: var(--ink); letter-spacing: 0; white-space: nowrap; }
+.b-quest { margin-top: 0.18em; font-size: 1.02em; color: var(--ink); line-height: 1.25; }
+.b-line { margin-top: 0.12em; font-size: 0.86em; color: var(--muted); line-height: 1.3; }
+.b-line::before { content: "\25C7\00A0\00A0"; color: var(--line); }
+.b-more { margin-left: 0.4em; font-style: italic; opacity: 0.8; }
+.b-where { margin-top: 0.12em; font-size: 0.74em; color: var(--muted); opacity: 0.8; }
+.b-where::before { content: "\2014\00A0"; }
+
+/* 0.16.0 game lines (HNR): one line of the game's own text, colours from its <font> tags kept. */
+.box.game { padding: 0.45em 0.75em 0.5em; }
+.b-text { font-size: 0.95em; line-height: 1.3; color: var(--ink); overflow-wrap: anywhere; }
+.box.more .b-text { color: var(--muted); font-style: italic; }
+.t-b { font-weight: bold; }
+.t-i { font-style: italic; }
+.t-u { text-decoration: underline; }

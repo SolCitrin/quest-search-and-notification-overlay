@@ -18,7 +18,7 @@ namespace QSO::Quests
         constexpr std::uint32_t kMaxInstances = 8192;
 
         // Game's own text substitution (fills <Alias=...>, <Global=...> etc.). Same IDs Compass Navigation
-        // Overhaul uses, and CNO runs in LoreRim on 1.6.1170.
+        // Overhaul uses on 1.6.
         //  - objective text: BGSInstancedQuestObjective::GetDisplayTextWithReplacedTags  ID 23229 / 23684
         //  - quest name:     ReplaceTagsInQuestText(BSString*, const TESQuest*, instanceID) ID 23429 / 23897
         std::string ObjectiveText(const RE::BGSInstancedQuestObjective& a_instance)
@@ -58,7 +58,7 @@ namespace QSO::Quests
         }
 
         // ---- Show on map (0.8.0) -------------------------------------------------------------------------------
-        // Read from the decrypted 1.6.1170 executable (2026-11-20); notes in KNOWLEDGEBASE.local.md.
+        // Read from the 1.6.1170 executable (decrypted in memory).
         // The vanilla journal (RequestObjectivesData, ID 53171) gives a SHOWN objective a "questTargetID" like this:
         //   1. PlayerCharacter quest-target lookup, ID 40513: (player, &quest, &BSTArray<TESQuestTarget*>*) -> bool.
         //      It takes the player's questTargetsLock itself.
@@ -178,7 +178,7 @@ namespace QSO::Quests
         }
 
         // ---- Objective locations (0.9.0) ----------------------------------------------------------------------
-        // Location-type keywords from Skyrim.esm (form IDs read from the file 2026-11-21).
+        // Location-type keywords from Skyrim.esm (form IDs read from the file).
         bool HasLocType(const RE::BGSLocation* a_loc, std::initializer_list<RE::FormID> a_ids)
         {
             for (const auto id : a_ids) {
@@ -249,7 +249,7 @@ namespace QSO::Quests
         }
 
         // ---- Quest notes (0.15.0) ------------------------------------------------------------------------------
-        // Research and evidence: RESEARCH-MISSIVE-TEXT.md. A note = a BOOK held by one of the quest's reference
+        // A note = a BOOK held by one of the quest's reference
         // aliases filled "Create Reference to Object" (kCreated: every Missives quest, bounty and courier letters) or
         // "Forced Reference" (kForced). Only the static alias data and the book record are read: the note's own
         // reference is never looked at, so a note removed at turn-in cannot matter. Never Activate / equip / open the
@@ -769,7 +769,7 @@ namespace QSO::Quests
 
         // Group by (quest, instance). The array is oldest -> newest; the journal shows newest first.
         // Only objectives the journal shows count (shown / completed-shown / failed-shown): the list also keeps
-        // hidden leftovers such as failed radiant favours and never-shown follower lines (0.2.1, user test 2026-11-16).
+        // hidden leftovers such as failed radiant favours and never-shown follower lines.
         std::map<std::pair<RE::TESQuest*, std::uint32_t>, std::size_t> index;
         for (int age = static_cast<int>(raw.size()) - 1; age >= 0; --age) {
             const auto& r = raw[static_cast<std::size_t>(age)];

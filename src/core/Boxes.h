@@ -4,7 +4,7 @@
 #include <string>
 
 // core (0.16.0): ONE box stack for every notification box, quest boxes (quests part) and game lines (capture part).
-// The hold rules are HNR 0.2.0's, tested in VanillaTestingList 2026-11-24, now applied to every box:
+// The hold rules apply to every box:
 // - while the J overlay, Dialogue, the journal, a loading screen, the Fader or any pausing / cursor / modal menu is
 //   open, new boxes wait here (FIFO, cap 50, the rest folded into one "+N more" box); boxes already on screen pause;
 // - after a loading screen or a fade, the release waits 2 s more;

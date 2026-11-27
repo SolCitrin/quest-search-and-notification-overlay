@@ -1,6 +1,6 @@
 # Quest Search and Notification Overlay
 
-An SKSE plugin with a Prisma UI page for Skyrim Anniversary / Special Edition. It replaces the J journal with a
+An SKSE plugin with a Prisma UI page for Skyrim (versions 1.6.1170 and 1.7.104). It replaces the J journal with a
 searchable quest overlay, and can show the game's top-left notifications as readable boxes that stay on screen.
 
 ## Features
@@ -11,20 +11,24 @@ searchable quest overlay, and can show the game's top-left notifications as read
   - Pins and hidden quests are saved in the SKSE co-save.
 - **Quest boxes:** a box when a quest updates, and when you arrive at or leave a town with open objectives, or come
   near one.
-- **Game notifications as boxes (optional):** the game's own top-left lines ("Gold added", "Autosaving...") become
+- **Game notifications as boxes (optional, off by default; switch it on in the Settings page, then restart):** the game's own top-left lines ("Gold added", "Autosaving...") become
   boxes in the same stack. The boxes wait while a menu or loading screen is open. Lines that the B612 notification
   manager handles are passed through to it.
 - **Notifications tab:** a history of everything that popped up in this game session, newest first, with times.
 - **Settings page** inside the overlay: position, style, scale, box time, max boxes, and more. Saved to
-  `Documents/My Games/Skyrim Special Edition/SKSE/QuestSearchOverlay_Settings.ini`.
+  `Documents/My Games/Skyrim Special Edition/SKSE/QuestSearchOverlay_Settings.ini`. Once you change anything there,
+  that file overrides `QuestSearchOverlay.ini`; the page's Reset button goes back to the INI.
 
 ## Requirements
-- Skyrim **1.6.1170** or **1.7.104** (one DLL for both). Other versions, and Skyrim VR, are not tested.
+- Skyrim **1.6.1170** or **1.7.104** (one DLL for both). These are the only supported versions.
+  - **Not for Skyrim SE 1.5.97 or Skyrim VR:** on those it declines to load and writes a line to its log.
+  - Other 1.6.x / 1.7.x versions are untested.
 - [SKSE64](https://skse.silverlock.org/) for your game version.
 - [Address Library for SKSE Plugins](https://www.nexusmods.com/skyrimspecialedition/mods/32444) (All in One).
-- [Prisma UI](https://www.nexusmods.com/skyrimspecialedition/mods/148718) (1.5.0 or newer on Skyrim 1.7).
+- **[Prisma UI](https://www.nexusmods.com/skyrimspecialedition/mods/148718) 1.5.0 or newer (required).** Without it the
+  J key opens nothing (the pause menu's Quests tab still works).
 
-Keyboard and mouse. Controllers are not tested.
+**A keyboard is needed to open the overlay.** On a controller the journal button opens the normal journal.
 
 ## Building
 Windows, Visual Studio 2022 (C++ desktop workload). Put the dependencies in `deps\`:

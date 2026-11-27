@@ -8,7 +8,7 @@ namespace QSO::InputHook
     // Returns false (and installs nothing) if the call site does not look like a call.
     bool Install();
 
-    // Logs Journal Menu open/close (test evidence that Esc still opens it). Call after kDataLoaded.
+    // Logs Journal Menu open/close (shows in the log that Esc still opens it). Call after kDataLoaded.
     void RegisterMenuWatcher();
 
     // DirectInput scan code bound to Journal in gameplay (0x24 = J by default; 0xFF if none). Read live, so a

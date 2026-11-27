@@ -76,7 +76,7 @@ namespace
             QSO::Overlay::Initialize();
             QSO::Nearby::Install();
 #endif
-            // HNR: hook here, not at plugin load: by now every plugin has done its load-time patching, so the byte check
+            // Hook here, not at plugin load: by now every plugin has done its load-time patching, so the byte check
             // sees the call site as the game will run it, and a site someone else already took makes us fall back.
             QSO::Boxes::SetB612Present(QSO::B612::Detect());
             InstallCapture();
@@ -91,7 +91,7 @@ namespace
 }
 
 SKSEPluginInfo(
-    .Version = REL::Version{ 0, 18, 0, 0 },
+    .Version = REL::Version{ 1, 0, 0, 0 },
     .Name = QSO_PLUGIN_NAME ""sv,
     .Author = "SolCitrin"sv,
     .StructCompatibility = SKSE::StructCompatibility::Independent,
@@ -99,6 +99,17 @@ SKSEPluginInfo(
 
 SKSEPluginLoad(const SKSE::LoadInterface* a_skse)
 {
+    // Only Skyrim 1.6 and later (Anniversary Edition builds, including 1.7) are supported. Older runtimes (SE 1.5.x)
+    // and Skyrim VR are refused here, before anything reads game memory or the Address Library. The runtime version
+    // comes from SKSE itself; the log folder lookup does not touch the game either.
+    if (const auto runtime = a_skse->RuntimeVersion(); runtime < REL::Version{ 1, 6, 0, 0 }) {
+        SetupLog();
+        logger::error("{} {} needs Skyrim 1.6 or later (Anniversary Edition builds); this game is {}. "
+                      "Not loading: SE 1.5.x and Skyrim VR are not supported.",
+            QSO_DISPLAY_NAME, QSO_VERSION_STRING, runtime.string());
+        return false;
+    }
+
     SKSE::Init(a_skse);
     SetupLog();
     logger::info("{} {} loading (game {}; parts: {}).", QSO_DISPLAY_NAME, QSO_VERSION_STRING, REL::Module::get().version().string(),

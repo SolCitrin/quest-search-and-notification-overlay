@@ -1,6 +1,6 @@
 #pragma once
 
-// The ShowMessage hook: every plain HUD notification line is logged, then taken for our boxes (M2) or left to vanilla.
+// The ShowMessage hook: every plain HUD notification line is logged, then taken for our boxes or left to vanilla.
 namespace QSO::Capture
 {
     // Plugin load: logs the call-site bytes as the exe has them before other plugins' kDataLoaded work.

@@ -7,9 +7,9 @@
 #include <set>
 #include <thread>
 
-// Merged in 0.16.0 from QSO 0.11.0 Overlay.cpp (the box half: one view shown only while a box is up, since a shown Prisma
-// view is drawn every frame over everything; the blocking-menu set; stale blockers dropped; the page's idle handshake)
-// and HNR 0.2.0 Boxes.cpp (the stricter hold: Fader too, the 2 s settle after a load or fade, the FIFO with its cap).
+// The box stack: one view shown only while a box is up (a shown Prisma view is drawn every frame over everything), the
+// blocking-menu set, stale blockers dropped, the page's idle handshake, and the hold rules (Fader too, the 2 s settle
+// after a load or fade, the FIFO with its cap).
 namespace QSO::Boxes
 {
     namespace
@@ -42,8 +42,8 @@ namespace QSO::Boxes
             return a_name == RE::LoadingMenu::MENU_NAME || a_name == RE::FaderMenu::MENU_NAME;
         }
 
-        // QSO 0.11.0's set plus the Fader Menu (HNR M1: vanilla lost a line during a load door's fade). Dialogue (user
-        // decision) and the Journal are in the named set. The HUD and the cursor never count.
+        // The named set includes the Fader Menu (vanilla loses a line shown during a load door's fade), Dialogue and the
+        // Journal. The HUD and the cursor never count.
         bool Blocks(const std::string& a_name)
         {
             static const std::set<std::string_view> named = { RE::LoadingMenu::MENU_NAME, RE::FaderMenu::MENU_NAME,
@@ -131,7 +131,7 @@ namespace QSO::Boxes
                     if (static_cast<unsigned char>(c) < 0x20) {
                         out += std::format("\\u{:04x}", static_cast<unsigned>(static_cast<unsigned char>(c)));
                     } else {
-                        out += c;  // UTF-8 bytes pass through (HNR M1: lines arrive as UTF-8)
+                        out += c;  // UTF-8 bytes pass through (game lines arrive as UTF-8)
                     }
                 }
             }
@@ -164,7 +164,7 @@ namespace QSO::Boxes
                 UpdateVisibility();
                 return;
             }
-            // Unpause the page FIRST (0.16.0 fix; HNR 0.2.0 sent the backlog to a still-paused page): a paused page lets
+            // Unpause the page FIRST (sending the backlog to a still-paused page was a bug): a paused page lets
             // everything wait, and with 50 held + the "+N more" box it would fold the OLDEST held line into a second
             // "+1 more" box. Unpaused, it shows up to the box limit at once and the rest wait under its own cap of 50.
             UpdateVisibility();

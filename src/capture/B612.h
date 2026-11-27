@@ -1,9 +1,9 @@
 #pragma once
 
-// B612 NotificationManager (Nexus 127701, in LoreRim; Feeding Perk Notification depends on it). Mods register lines with
+// B612 NotificationManager (Nexus 127701; Feeding Perk Notification depends on it). Mods register lines with
 // it inside the HUD movie; B612 then hides them or turns them into mod events, working on vanilla's MessageArray. A line
-// we take never reaches that array, so (user decision 2026-11-23) a line B612 claims is passed on to vanilla untouched
-// and B612 handles it exactly as without HNR.
+// we take never reaches that array, so a line B612 claims is passed on to vanilla untouched
+// and B612 handles it exactly as without this capture.
 //
 // The data layout and the matching rule (facts, not code) are from Notification Tweaks' notes on B612 1.0.27:
 // `_root.b612_NotificationManager.NotificationManager_mc.searchItems`, an array of {text, before, after, callback};

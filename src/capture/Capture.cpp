@@ -6,12 +6,11 @@
 
 #include <mutex>
 
-// Every plain notification line passes here. M2: it is logged, then taken for our boxes or left to vanilla.
-// 0.16.0: moved unchanged from HUD Notification Replacer 0.2.0 (src/Capture.cpp) into QSO's capture part. Only the
-// namespaces, the "Capture: " log prefix, the switch (Settings::CaptureOn(), live from the Settings page) and the
-// hand-over to the shared box stack (Boxes::PushLine) changed. Installed only if [Capture] bEnabled was on at startup.
+// Every plain notification line passes here: it is logged, then taken for our boxes or left to vanilla.
+// The switch is Settings::CaptureOn() (live from the Settings page); taken lines go to the shared box stack
+// (Boxes::PushLine). Installed only if [Capture] bEnabled was on at startup.
 //
-// Where the hook sits (docs/RESEARCH-INTERCEPT.md section 1 and 5): HUDMenu::ProcessMessage handles a HUDData
+// Where the hook sits: HUDMenu::ProcessMessage handles a HUDData
 // kNotification by calling GFxValue::ObjectInterface::Invoke(root, "ShowMessage", [text]) once. That one call is
 // the last stop before hudmenu.swf, so every sender passes it (Debug.Notification, RE::DebugNotification,
 // SendHUDMessage::ShowHUDMessage callers such as Experience's "+N XP", raw AddMessage posters), and every other
@@ -22,10 +21,10 @@
 
 namespace
 {
-    // ---- Addresses (CommonLibSSE-NG b93280e Offsets.h; offsets per research doc / Notification Tweaks notes) ----
+    // ---- Addresses (CommonLibSSE-NG Offsets.h; call-site offset checked in the game executable) ----
     constexpr REL::RelocationID kProcessMessageId{ 50718, 51612 };  // HUDMenu::ProcessMessage (vtable slot 0x4)
     constexpr REL::RelocationID kInvokeId{ 80233, 82256 };          // GFxValue::ObjectInterface::Invoke
-    constexpr std::size_t       kCallOffsetAE = 0x686;              // AE 1.6.1170 and 1.7.104 (read statically 2026-11-25); SE 1.5.97 would be 0x65E
+    constexpr std::size_t       kCallOffsetAE = 0x686;              // AE 1.6.1170 and 1.7.104; SE 1.5.97 would be 0x65E
     constexpr std::size_t       kLeaBeforeCall = 0x15;              // lea r9, "ShowMessage" sits 0x15 bytes earlier
     constexpr std::uint8_t      kCallOpcode = 0xE8;                 // call rel32
     constexpr std::uint8_t      kLeaR9[] = { 0x4C, 0x8D, 0x0D };    // lea r9, [rip+disp32]
@@ -210,7 +209,7 @@ namespace
 
     // ---- The decision, per line (on the hook's thread) ----
     //
-    // M1 showed the hook running on varying NON-main threads, so nothing here touches menus or Prisma: the line is
+    // The hook runs on varying NON-main threads, so nothing here touches menus or Prisma: the line is
     // copied and handed to the main thread (SKSE AddTask), where Boxes decides show / hold. What must be decided here,
     // synchronously, is only whether vanilla gets the line, from facts that are safe to read on this thread: the
     // kill switch, the page-ready flag (atomic) and B612's items (in the HUD movie, which this thread is driving).
@@ -219,7 +218,7 @@ namespace
     {
         kBox,             // taken: vanilla does not show it, our box will
         kVanillaOff,      // [Capture] bEnabled=0 (switched off after startup): log only
-        kVanillaB612,     // B612 claims it: vanilla + B612 handle it as without HNR
+        kVanillaB612,     // B612 claims it: vanilla + B612 handle it as without this capture
         kVanillaNotReady  // our page is not loaded (yet): vanilla shows it
     };
 
@@ -300,7 +299,7 @@ namespace
                             return true;  // taken: the swf never gets it (the caller ignores this result)
                         }
                     } else {
-                        // Wide strings never appeared in M1 (51 lines); leave anything unusual to vanilla.
+                        // Wide strings have not been seen here; leave anything unusual to vanilla.
                         logger::info("Capture: call site: ShowMessage argument is not a plain string ({}{}); left to vanilla",
                             v.IsStringW() ? "wide string" : Describe(v), note);
                     }

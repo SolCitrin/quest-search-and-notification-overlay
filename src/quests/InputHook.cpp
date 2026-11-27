@@ -129,7 +129,7 @@ namespace QSO::InputHook
                              "is used, the gameplay row only if the map row is unbound).",
                     JournalKeyIn(RE::ControlMap::InputContextID::kMap), JournalKeyIn(RE::ControlMap::InputContextID::kGameplay));
             }
-            // Milestone 3: open the overlay (it also writes the quest list to the log).
+            // Open the overlay (it also writes the quest list to the log).
             Overlay::Open();
         }
 
@@ -152,7 +152,7 @@ namespace QSO::InputHook
                 bool                  drop = false;
 
                 if (overlayOpen) {
-                    // Milestone 3: while the overlay is open, no keyboard event reaches the game, SKSE's Papyrus
+                    // While the overlay is open, no keyboard event reaches the game, SKSE's Papyrus
                     // key events or any mod hooked inside us. The page still gets typing via PrismaUI's window hook.
                     // Mouse events pass: PrismaUI drives its cursor from them.
                     const auto type = event->GetEventType();

@@ -1,7 +1,7 @@
 # Builds QuestSearchOverlay.dll and stages an MO2-ready mod folder under dist\.
 # Dependencies go in deps\ (see README.md, "Building"). -Parts notify compiles core + capture only
 # (HUDNotificationReplacer.dll) into build-notify-ng16\; it is not packaged.
-param([string]$PackageName = 'Quest Search and Notification Overlay 0.18.0', [ValidateSet('all', 'notify')][string]$Parts = 'all')
+param([string]$PackageName = 'Quest Search and Notification Overlay 1.0.0', [ValidateSet('all', 'notify')][string]$Parts = 'all')
 # 'Continue', not 'Stop': in Windows PowerShell 5.1 a native tool's stderr line (CMake's status messages)
 # becomes an error record, which 'Stop' turns into a failure. Failures are checked via $LASTEXITCODE / throw.
 $ErrorActionPreference = 'Continue'
@@ -40,6 +40,8 @@ if (Test-Path $package) { throw "Package exists, not overwriting: $package" }
 New-Item -ItemType Directory -Path "$package\SKSE\Plugins" | Out-Null
 Copy-Item $dll "$package\SKSE\Plugins"
 Copy-Item "$project\QuestSearchOverlay.ini" "$package\SKSE\Plugins"
+# GPL-3.0 text and third-party notices travel with the DLL (they are kept as files in the project root).
+foreach ($f in 'QuestSearchOverlay-LICENSE.txt', 'QuestSearchOverlay-THIRD-PARTY.txt') { Copy-Item "$project\$f" "$package\SKSE\Plugins" }
 # PrismaUI loads views from Data\PrismaUI\views\<name>\ (CreateView("QuestSearchOverlay/index.html")).
 $viewOut = "$package\PrismaUI\views\QuestSearchOverlay"
 New-Item -ItemType Directory -Path $viewOut | Out-Null

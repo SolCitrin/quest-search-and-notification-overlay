@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.25)
-project(QuestSearchOverlay VERSION 0.18.0 LANGUAGES CXX)
+project(QuestSearchOverlay VERSION 1.0.0 LANGUAGES CXX)
 
 if(NOT WIN32 OR NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
     message(FATAL_ERROR "QuestSearchOverlay requires Windows x64")
@@ -9,7 +9,7 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
-# Pinned dependencies (paths passed in by tools/Build.ps1; see README.md).
+# Pinned dependencies (paths passed in by tools/Build.ps1).
 set(QSO_COMMONLIB_DIR "" CACHE PATH "Pinned CommonLibSSE-NG source")
 set(QSO_HEADERS_DIR "" CACHE PATH "Pinned rapidcsv source parent")
 if(NOT EXISTS "${QSO_COMMONLIB_DIR}/CMakeLists.txt")
@@ -22,16 +22,20 @@ set(ENABLE_SKYRIM_SE OFF CACHE BOOL "" FORCE)
 set(ENABLE_SKYRIM_AE ON CACHE BOOL "" FORCE)
 set(ENABLE_SKYRIM_VR OFF CACHE BOOL "" FORCE)
 set(BUILD_TESTS OFF CACHE BOOL "" FORCE)
-# This CommonLib pin (b93280e) only lays out ControlMap, TES, BGSSaveLoadManager and CombatController for AE when
-# SKYRIM_SUPPORT_AE is defined, and nothing defines it. Without it, ControlMap is 8 bytes short (InputContextID
-# lacks kMarketplace), so every field after controlMap[] is misread: 0.1.0 crashed on the first J press reading
-# contextPriorityStack. Must apply to CommonLib AND this plugin, so set it before add_subdirectory.
+# SKYRIM_SUPPORT_AE selects the AE layouts in CommonLibSSE-NG builds that test it (older versions laid out ControlMap,
+# TES, BGSSaveLoadManager and CombatController for AE only with it; without it ControlMap is 8 bytes short and every
+# field after controlMap[] is misread). Kept so the AE layout never depends on the library version. It must apply to
+# CommonLib AND this plugin, so it is set before add_subdirectory.
 add_compile_definitions(SKYRIM_SUPPORT_AE)
+# Store source paths relative to this folder (no absolute build paths in the DLL: CommonLib's logging records
+# std::source_location for every log call). Applies to CommonLib too, so it is set before add_subdirectory.
+file(TO_NATIVE_PATH "${CMAKE_CURRENT_SOURCE_DIR}" QSO_TRIM_PREFIX)
+add_compile_options("/d1trimfile:${QSO_TRIM_PREFIX}")
 add_subdirectory("${QSO_COMMONLIB_DIR}" "${CMAKE_BINARY_DIR}/commonlib" EXCLUDE_FROM_ALL)
 
-# 0.16.0: three parts. all = core + quests + capture -> QuestSearchOverlay.dll (shipped).
-# notify = core + capture -> HUDNotificationReplacer.dll, its own INI / view folder / log (compiled once to prove the
-# split; not shipped yet).
+# Two parts. all = core + quests + capture -> QuestSearchOverlay.dll (shipped).
+# notify = core + capture -> HUDNotificationReplacer.dll, its own INI / view folder / log (a notifications-only build;
+# not shipped).
 set(QSO_PARTS "all" CACHE STRING "all (quests + game notifications) or notify (game notifications only)")
 set_property(CACHE QSO_PARTS PROPERTY STRINGS all notify)
 set(QSO_CORE_SOURCES src/main.cpp src/core/View.cpp src/core/Boxes.cpp src/core/Settings.cpp src/core/History.cpp)

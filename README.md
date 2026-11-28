@@ -3,7 +3,8 @@
 An SKSE plugin with a Prisma UI page for Skyrim (versions 1.6.1170 and 1.7.104). It replaces the J journal with a
 searchable quest overlay, and can show the game's top-left notifications as readable boxes that stay on screen.
 
-**Download:** [Nexus Mods, mod 200828](https://www.nexusmods.com/skyrimspecialedition/mods/200828)
+**Download:** [ModHold](https://modholdmods.com/g/skyrim-se/mods/2145/qsno-quest-search-and-notification-overlay)
+or [Nexus Mods, mod 200828](https://www.nexusmods.com/skyrimspecialedition/mods/200828)
 
 ## Features
 - **Quest overlay (J):** every open quest with its objectives, place and journal text, grouped by type.

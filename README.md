@@ -28,8 +28,9 @@ or [Nexus Mods, mod 200828](https://www.nexusmods.com/skyrimspecialedition/mods/
   - Other 1.6.x / 1.7.x versions are untested.
 - [SKSE64](https://skse.silverlock.org/) for your game version.
 - [Address Library for SKSE Plugins](https://www.nexusmods.com/skyrimspecialedition/mods/32444) (All in One).
-- **[Prisma UI](https://www.nexusmods.com/skyrimspecialedition/mods/148718) 1.5.0 or newer (required).** Without it the
-  J key opens nothing (the pause menu's Quests tab still works).
+- **[Prisma UI](https://www.nexusmods.com/skyrimspecialedition/mods/148718) (required):** 1.4.1 or newer on 1.6.1170;
+  1.5.0 or newer on 1.7.104 (Prisma UI's first build for 1.7). Tested with 1.4.1 and 1.5.1. Without it the J key
+  opens nothing (the pause menu's Quests tab still works).
 
 **A keyboard is needed to open the overlay.** On a controller the journal button opens the normal journal.
 
